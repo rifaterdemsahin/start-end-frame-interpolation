@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cost — Start-End Frame Interpolation</title>
+    <style>
+      :root {
+        --bg: #07111f;
+        --panel: #0f1d35;
+        --panel-2: #122442;
+        --text: #eff5ff;
+        --muted: #9eb2d4;
+        --accent: #7dd3fc;
+        --accent-2: #8b5cf6;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background: radial-gradient(circle at top, #18325a, var(--bg) 56%);
+        color: var(--text);
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 48px 20px 72px;
+      }
+
+      .hero {
+        text-align: center;
+        margin-bottom: 36px;
+      }
+
+      .hero h1 {
+        margin: 0 0 10px;
+        font-size: clamp(2rem, 4vw, 3.5rem);
+      }
+
+      .hero p {
+        margin: 0 auto;
+        max-width: 760px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .badge {
+        display: inline-block;
+        margin-bottom: 16px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(125, 211, 252, 0.15);
+        border: 1px solid rgba(125, 211, 252, 0.4);
+        color: var(--accent);
+        font-size: 0.92rem;
+        font-weight: 700;
+      }
+
+      .grid {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      }
+
+      .card {
+        background: linear-gradient(180deg, rgba(18, 36, 66, 0.96), rgba(10, 22, 43, 0.96));
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 18px;
+        padding: 18px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.28);
+      }
+
+      .card h2 {
+        margin-top: 0;
+        margin-bottom: 12px;
+        font-size: 1.25rem;
+      }
+
+      .card p,
+      .card li {
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .card ul {
+        margin: 12px 0 0;
+        padding-left: 18px;
+      }
+
+      .note {
+        margin-top: 16px;
+        padding: 16px 18px;
+        border-left: 4px solid var(--accent-2);
+        background: rgba(139, 92, 246, 0.12);
+        border-radius: 10px;
+        color: #e5ddff;
+      }
+
+      a {
+        color: var(--accent);
+      }
+
+      .calculators {
+        margin-top: 32px;
+      }
+
+      .calculators h2 {
+        font-size: 1.5rem;
+        margin-bottom: 6px;
+      }
+
+      .calculators > p {
+        color: var(--muted);
+        margin-top: 0;
+        margin-bottom: 20px;
+      }
+
+      .form-grid {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        margin-bottom: 16px;
+      }
+
+      .field label {
+        display: block;
+        font-weight: 700;
+        font-size: 0.9rem;
+        margin-bottom: 6px;
+        color: var(--text);
+      }
+
+      .field input[type="number"] {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: var(--panel-2);
+        color: var(--text);
+        font-family: inherit;
+        font-size: 0.92rem;
+      }
+
+      .result {
+        margin-top: 14px;
+        padding: 14px 16px;
+        border-radius: 10px;
+        background: rgba(125, 211, 252, 0.1);
+        border: 1px solid rgba(125, 211, 252, 0.3);
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .result span {
+        color: var(--accent);
+      }
+
+      .topnav {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        backdrop-filter: blur(10px);
+        background: rgba(7, 17, 31, 0.82);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .topnav-inner {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 14px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .brand {
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        color: var(--text);
+        text-decoration: none;
+      }
+
+      .topnav-links {
+        display: flex;
+        gap: 20px;
+      }
+
+      .topnav-links a {
+        color: var(--muted);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        padding: 6px 2px;
+        border-bottom: 2px solid transparent;
+        transition: color 0.15s, border-color 0.15s;
+      }
+
+      .topnav-links a:hover {
+        color: var(--text);
+      }
+
+      .topnav-links a.active {
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="topnav">
+      <div class="topnav-inner">
+        <a class="brand" href="index.html">Start-End Frame Interpolation</a>
+        <div class="topnav-links">
+          <a href="index.html">Home</a>
+          <a href="comparison.html">Comparison</a>
+          <a href="api.html">API</a>
+          <a href="cost.html" class="active">Cost</a>
+        </div>
+      </div>
+    </nav>
+    <div class="container">
+      <section class="hero">
+        <div class="badge">What this actually costs</div>
+        <h1>Cost of generating a video</h1>
+        <p>
+          There are three ways to run this workflow — the Google Flow UI, fal.ai's hosted
+          models, or the Gemini API directly — and each bills differently. Rates change
+          often, so this page tracks what's known from this project plus live links to each
+          provider's pricing, alongside a calculator you can plug current rates into.
+        </p>
+      </section>
+
+      <section class="grid">
+        <article class="card">
+          <h2>Google Flow (used here)</h2>
+          <p>
+            This project's <a href="assets/output-animation.mp4">output video</a> was generated
+            in the Flow UI with Veo 3.1 - Lite:
+          </p>
+          <ul>
+            <li><strong>10 credits</strong> for one 8-second video</li>
+            <li>Credits are drawn from a Google AI / Flow subscription plan</li>
+          </ul>
+          <p>
+            See <a href="https://labs.google/fx/tools/flow" target="_blank" rel="noreferrer">labs.google/fx/tools/flow</a>
+            and the current <a href="https://one.google.com/about/google-ai-plans" target="_blank" rel="noreferrer">Google AI plans</a>
+            for what a credit costs on your plan.
+          </p>
+        </article>
+
+        <article class="card">
+          <h2>fal.ai (API, Option A)</h2>
+          <p>
+            Pay-as-you-go per generation; price depends on the model chosen (e.g. Kling,
+            Luma Ray2, Veo on fal) and output length/resolution.
+          </p>
+          <ul>
+            <li>No subscription required — billed per call</li>
+            <li>Price varies by model, not by "credits"</li>
+          </ul>
+          <p>
+            See <a href="https://fal.ai/pricing" target="_blank" rel="noreferrer">fal.ai/pricing</a>
+            and each model's page under <a href="https://fal.ai/models" target="_blank" rel="noreferrer">fal.ai/models</a>
+            for the current per-generation rate.
+          </p>
+        </article>
+
+        <article class="card">
+          <h2>Gemini API / Veo (Option B)</h2>
+          <p>
+            Usage-based pricing, typically per second of generated video, billed to your
+            Google Cloud / AI Studio account.
+          </p>
+          <ul>
+            <li>No Flow-style credits — straight usage billing</li>
+            <li>Rate depends on the Veo model version used</li>
+          </ul>
+          <p>
+            See <a href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noreferrer">ai.google.dev/gemini-api/docs/pricing</a>
+            for current per-second/per-generation rates.
+          </p>
+        </article>
+      </section>
+
+      <div class="note">
+        Prices are intentionally not hardcoded on this page beyond the one figure this
+        project actually used (10 Flow credits) — provider rates change frequently. Use the
+        calculator below with numbers copied from the links above.
+      </div>
+
+      <section class="calculators">
+        <h2>Cost calculator</h2>
+        <p>Plug in current rates to estimate a batch run before you kick it off.</p>
+
+        <div class="grid">
+          <article class="card">
+            <h3>Google Flow (credit-based)</h3>
+            <div class="form-grid">
+              <div class="field">
+                <label for="creditsPerVideo">Credits per video</label>
+                <input type="number" id="creditsPerVideo" value="10" min="0" />
+              </div>
+              <div class="field">
+                <label for="usdPerCredit">USD per credit (from your plan)</label>
+                <input type="number" id="usdPerCredit" value="0" min="0" step="0.001" />
+              </div>
+              <div class="field">
+                <label for="flowVideoCount">Number of videos</label>
+                <input type="number" id="flowVideoCount" value="1" min="0" />
+              </div>
+            </div>
+            <div class="result" id="flowResult">Total: <span>0 credits</span> / <span>$0.00</span></div>
+          </article>
+
+          <article class="card">
+            <h3>fal.ai / Gemini API (pay-per-generation)</h3>
+            <div class="form-grid">
+              <div class="field">
+                <label for="usdPerVideo">USD per video (from pricing page)</label>
+                <input type="number" id="usdPerVideo" value="0" min="0" step="0.01" />
+              </div>
+              <div class="field">
+                <label for="apiVideoCount">Number of videos</label>
+                <input type="number" id="apiVideoCount" value="1" min="0" />
+              </div>
+            </div>
+            <div class="result" id="apiResult">Total: <span>$0.00</span></div>
+          </article>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      function recalcFlow() {
+        var credits = parseFloat(document.getElementById("creditsPerVideo").value) || 0;
+        var usdPerCredit = parseFloat(document.getElementById("usdPerCredit").value) || 0;
+        var count = parseFloat(document.getElementById("flowVideoCount").value) || 0;
+        var totalCredits = credits * count;
+        var totalUsd = totalCredits * usdPerCredit;
+        document.getElementById("flowResult").innerHTML =
+          "Total: <span>" + totalCredits + " credits</span> / <span>$" + totalUsd.toFixed(2) + "</span>";
+      }
+
+      function recalcApi() {
+        var usdPerVideo = parseFloat(document.getElementById("usdPerVideo").value) || 0;
+        var count = parseFloat(document.getElementById("apiVideoCount").value) || 0;
+        var total = usdPerVideo * count;
+        document.getElementById("apiResult").innerHTML = "Total: <span>$" + total.toFixed(2) + "</span>";
+      }
+
+      ["creditsPerVideo", "usdPerCredit", "flowVideoCount"].forEach(function (id) {
+        document.getElementById(id).addEventListener("input", recalcFlow);
+      });
+      ["usdPerVideo", "apiVideoCount"].forEach(function (id) {
+        document.getElementById(id).addEventListener("input", recalcApi);
+      });
+
+      recalcFlow();
+      recalcApi();
+    </script>
+  </body>
+</html>

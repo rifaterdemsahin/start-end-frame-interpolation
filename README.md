@@ -50,3 +50,8 @@ See [comparison.html](comparison.html) for a side-by-side of the generated outpu
 
 See [api.html](api.html) for how to trigger the same start/end frame + prompt workflow
 programmatically via fal.ai or the Gemini API (Veo), including a snippet builder.
+
+## Cost
+
+See [cost.html](cost.html) for what Google Flow, fal.ai, and the Gemini API charge for this
+workflow, plus a calculator for estimating a batch run.

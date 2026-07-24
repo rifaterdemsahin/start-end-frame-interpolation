@@ -13,6 +13,11 @@ each `.html` page is served as-is.
   start/end frame + prompt workflow programmatically via fal.ai or the
   Gemini API (Veo). The builder only formats text client-side; it never
   makes network calls or handles real API keys.
+- `cost.html` — what Google Flow, fal.ai, and the Gemini API charge for
+  this workflow, plus a client-side calculator. Only the one known figure
+  (10 Flow credits per 8s video, from this project's own generation) is
+  hardcoded — everything else links to live provider pricing pages since
+  rates change.
 - `README.md` — project write-up: prompt used, generation choices, output.
 - `assets/` — media referenced by the HTML pages and `README.md`:
   - `start-frame.png` — first input frame
@@ -25,7 +30,7 @@ each `.html` page is served as-is.
 
 - Keep the HTML pages dependency-free (no external CDN scripts/fonts) since
   they're deployed as raw static content.
-- The three pages share a `.topnav` nav bar and CSS variables — duplicated
+- The four pages share a `.topnav` nav bar and CSS variables — duplicated
   per file rather than templated, since there's no build step. Keep them in
   sync when styling changes.
 - If you add or rename files under `assets/`, update `README.md` and every
