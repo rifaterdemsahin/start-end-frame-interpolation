@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Start-End Frame Interpolation</title>
+    <style>
+      :root {
+        --bg: #07111f;
+        --panel: #0f1d35;
+        --panel-2: #122442;
+        --text: #eff5ff;
+        --muted: #9eb2d4;
+        --accent: #7dd3fc;
+        --accent-2: #8b5cf6;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background: radial-gradient(circle at top, #18325a, var(--bg) 56%);
+        color: var(--text);
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 48px 20px 72px;
+      }
+
+      .hero {
+        text-align: center;
+        margin-bottom: 36px;
+      }
+
+      .hero h1 {
+        margin: 0 0 10px;
+        font-size: clamp(2rem, 4vw, 3.5rem);
+      }
+
+      .hero p {
+        margin: 0 auto;
+        max-width: 760px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .badge {
+        display: inline-block;
+        margin-bottom: 16px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(125, 211, 252, 0.15);
+        border: 1px solid rgba(125, 211, 252, 0.4);
+        color: var(--accent);
+        font-size: 0.92rem;
+        font-weight: 700;
+      }
+
+      .grid {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      }
+
+      .card {
+        background: linear-gradient(180deg, rgba(18, 36, 66, 0.96), rgba(10, 22, 43, 0.96));
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 18px;
+        padding: 18px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.28);
+      }
+
+      .card h2 {
+        margin-top: 0;
+        margin-bottom: 12px;
+        font-size: 1.25rem;
+      }
+
+      .card p,
+      .card li {
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .card ul {
+        margin: 0;
+        padding-left: 18px;
+      }
+
+      .image-frame {
+        overflow: hidden;
+        border-radius: 14px;
+        background: #081120;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .image-frame img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .note {
+        margin-top: 24px;
+        padding: 16px 18px;
+        border-left: 4px solid var(--accent-2);
+        background: rgba(139, 92, 246, 0.12);
+        border-radius: 10px;
+        color: #e5ddff;
+      }
+
+      a {
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <section class="hero">
+        <div class="badge">Google Flow Showcase</div>
+        <h1>Start-End Frame Interpolation</h1>
+        <p>
+          This project uses a start frame and an end frame to generate a short animation
+          with a developer-terminal look, colored server activity, and evolving UI text.
+          The project was explored in Google Flow using the shared project URL:
+          <a href="https://labs.google/fx/tools/flow/project/7eb0678b-488a-4066-8ad1-3aa0aecbf609/edit/0ea64bc9-91f9-4fd5-b384-26cc694ba4b2" target="_blank" rel="noreferrer">
+            https://labs.google/fx/tools/flow/project/7eb0678b-488a-4066-8ad1-3aa0aecbf609/edit/0ea64bc9-91f9-4fd5-b384-26cc694ba4b2
+          </a>
+        </p>
+      </section>
+
+      <section class="grid">
+        <article class="card">
+          <h2>Input frame A</h2>
+          <div class="image-frame">
+            <img src="image.png" alt="Start frame input" />
+          </div>
+          <p>The opening scene used as the first visual reference for the animation.</p>
+        </article>
+
+        <article class="card">
+          <h2>Input frame B</h2>
+          <div class="image-frame">
+            <img src="image-1.png" alt="End frame input" />
+          </div>
+          <p>The ending scene used as the second visual reference for the transition.</p>
+        </article>
+
+        <article class="card">
+          <h2>Generation prompt</h2>
+          <p>
+            Use the start frame and end frame to animate. Make sure the developer types and
+            the terminal gets more text with colors. Servers are running, and the lights in
+            the servers change over time.
+          </p>
+          <ul>
+            <li>Interpolation mode: Veo 3.1 - Lite</li>
+            <li>Duration: 8 seconds</li>
+            <li>Output style: practical tech animation</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h2>Output concept</h2>
+          <p>
+            The intended result is a short motion sequence that smoothly transitions between
+            the two provided frames while emphasizing terminal text growth, server activity,
+            and changing light states.
+          </p>
+          <div class="note">
+            Input and output are presented here as a lightweight webpage so the project can be
+            reviewed quickly in a browser.
+          </div>
+        </article>
+      </section>
+    </div>
+  </body>
+</html>
