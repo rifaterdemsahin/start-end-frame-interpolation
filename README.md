@@ -33,7 +33,7 @@ I'm going to generate an 8-second video animating between your two frames using 
 Would you like me to kick off this 1 video generation, costing 10 credits? 
 
 ## output
-![alt text](Developer_types_terminal_servers…_202607240857.mp4)
+![Developer_types_terminal_servers…_202607240857.mp4]
 
 
 
