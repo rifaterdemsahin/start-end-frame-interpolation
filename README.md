@@ -1,39 +1,40 @@
-# start-end-frame-interpolation
-Create practical tech animations 
+# Start-End Frame Interpolation
 
-> https://rifaterdemsahin.github.io/start-end-frame-interpolation/
+Create practical tech animations by interpolating between a start frame and an end frame.
 
-Example 
+> Live demo: https://rifaterdemsahin.github.io/start-end-frame-interpolation/
 
-https://youtu.be/ddDJxFnv-qs?t=11
+Example reference: https://youtu.be/ddDJxFnv-qs?t=11
 
-## name the image
-![alt text](image.png)
+## Start frame
 
-## end frame
-![alt text](image-1.png)
+![Start frame](assets/start-frame.png)
 
+## End frame
 
-## prompt 
-- use the start frame and end frame to animate > make sure the Developer types and the terminal gets more text with colors and servers running the lights change in the servers
+![End frame](assets/end-frame.png)
 
-## generate
-Would you like to proceed with Veo 3.1 - Lite, or would you prefer to just use the first frame with Omni Flash?
+## Prompt
 
-radio_button_checked
-Use Veo 3.1 - Lite (Interpolate between frames)
+Use the start frame and end frame to animate. Make sure the developer types and the
+terminal gets more text with colors, and the servers running have lights that change.
 
-radio_button_unchecked
-Use Omni Flash (Animate from start frame only)
+## Model selection
 
+Two generation options were considered:
 
-## approval
-I'm going to generate an 8-second video animating between your two frames using Veo 3.1 - Lite.
+- **Veo 3.1 - Lite** — interpolates between the start and end frames.
+- **Omni Flash** — animates from the start frame only.
 
-Would you like me to kick off this 1 video generation, costing 10 credits? 
+Veo 3.1 - Lite was selected so the animation could interpolate between both frames.
 
-## output
-![Developer_types_terminal_servers…_202607240857.mp4]
+## Generation
 
+An 8-second video was generated animating between the two frames using Veo 3.1 - Lite,
+at a cost of 10 credits.
 
+## Output
 
+<video src="assets/output-animation.mp4" controls width="480"></video>
+
+[Download the output video](assets/output-animation.mp4)

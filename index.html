@@ -115,6 +115,37 @@
         color: #e5ddff;
       }
 
+      .output {
+        margin-top: 32px;
+        text-align: center;
+      }
+
+      .output h2 {
+        margin: 0 0 16px;
+        font-size: 1.5rem;
+      }
+
+      .video-frame {
+        overflow: hidden;
+        border-radius: 18px;
+        background: #081120;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.28);
+        max-width: 640px;
+        margin: 0 auto;
+      }
+
+      .video-frame video {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .caption {
+        margin-top: 12px;
+        color: var(--muted);
+      }
+
       a {
         color: var(--accent);
       }
@@ -137,17 +168,17 @@
 
       <section class="grid">
         <article class="card">
-          <h2>Input frame A</h2>
+          <h2>Start frame</h2>
           <div class="image-frame">
-            <img src="image.png" alt="Start frame input" />
+            <img src="assets/start-frame.png" alt="Start frame input" />
           </div>
           <p>The opening scene used as the first visual reference for the animation.</p>
         </article>
 
         <article class="card">
-          <h2>Input frame B</h2>
+          <h2>End frame</h2>
           <div class="image-frame">
-            <img src="image-1.png" alt="End frame input" />
+            <img src="assets/end-frame.png" alt="End frame input" />
           </div>
           <p>The ending scene used as the second visual reference for the transition.</p>
         </article>
@@ -178,6 +209,14 @@
             reviewed quickly in a browser.
           </div>
         </article>
+      </section>
+
+      <section class="output">
+        <h2>Output animation</h2>
+        <div class="video-frame">
+          <video src="assets/output-animation.mp4" controls playsinline preload="metadata"></video>
+        </div>
+        <p class="caption">8-second interpolation rendered with Veo 3.1 - Lite.</p>
       </section>
     </div>
   </body>
