@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Start-End Frame Interpolation</title>
+    <title>Comparison — Start-End Frame Interpolation</title>
     <style>
       :root {
         --bg: #07111f;
@@ -65,7 +65,7 @@
       .grid {
         display: grid;
         gap: 20px;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       }
 
       .card {
@@ -89,21 +89,24 @@
       }
 
       .card ul {
-        margin: 0;
+        margin: 12px 0 0;
         padding-left: 18px;
       }
 
-      .image-frame {
+      .media-frame {
         overflow: hidden;
         border-radius: 14px;
         background: #081120;
         border: 1px solid rgba(255, 255, 255, 0.08);
+        aspect-ratio: 16 / 9;
       }
 
-      .image-frame img {
+      .media-frame video,
+      .media-frame iframe {
         display: block;
         width: 100%;
-        height: auto;
+        height: 100%;
+        border: 0;
       }
 
       .note {
@@ -113,37 +116,6 @@
         background: rgba(139, 92, 246, 0.12);
         border-radius: 10px;
         color: #e5ddff;
-      }
-
-      .output {
-        margin-top: 32px;
-        text-align: center;
-      }
-
-      .output h2 {
-        margin: 0 0 16px;
-        font-size: 1.5rem;
-      }
-
-      .video-frame {
-        overflow: hidden;
-        border-radius: 18px;
-        background: #081120;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.28);
-        max-width: 640px;
-        margin: 0 auto;
-      }
-
-      .video-frame video {
-        display: block;
-        width: 100%;
-        height: auto;
-      }
-
-      .caption {
-        margin-top: 12px;
-        color: var(--muted);
       }
 
       a {
@@ -205,77 +177,62 @@
       <div class="topnav-inner">
         <a class="brand" href="index.html">Start-End Frame Interpolation</a>
         <div class="topnav-links">
-          <a href="index.html" class="active">Home</a>
-          <a href="comparison.html">Comparison</a>
+          <a href="index.html">Home</a>
+          <a href="comparison.html" class="active">Comparison</a>
           <a href="api.html">API</a>
         </div>
       </div>
     </nav>
     <div class="container">
       <section class="hero">
-        <div class="badge">Google Flow Showcase</div>
-        <h1>Start-End Frame Interpolation</h1>
+        <div class="badge">Side-by-side review</div>
+        <h1>Output vs. Source</h1>
         <p>
-          This project uses a start frame and an end frame to generate a short animation
-          with a developer-terminal look, colored server activity, and evolving UI text.
-          The project was explored in Google Flow using the shared project URL:
-          <a href="https://labs.google/fx/tools/flow/project/7eb0678b-488a-4066-8ad1-3aa0aecbf609/edit/0ea64bc9-91f9-4fd5-b384-26cc694ba4b2" target="_blank" rel="noreferrer">
-            https://labs.google/fx/tools/flow/project/7eb0678b-488a-4066-8ad1-3aa0aecbf609/edit/0ea64bc9-91f9-4fd5-b384-26cc694ba4b2
-          </a>
+          A direct comparison between the generated interpolation and the reference clip that
+          inspired the prompt. Play both and scrub to the same moment to judge how closely the
+          typing, terminal text growth, and server light changes track the source.
         </p>
       </section>
 
       <section class="grid">
         <article class="card">
-          <h2>Start frame</h2>
-          <div class="image-frame">
-            <img src="assets/start-frame.png" alt="Start frame input" />
+          <h2>Source reference</h2>
+          <div class="media-frame">
+            <iframe
+              src="https://www.youtube.com/embed/ddDJxFnv-qs?start=12"
+              title="Source reference video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            ></iframe>
           </div>
-          <p>The opening scene used as the first visual reference for the animation.</p>
-        </article>
-
-        <article class="card">
-          <h2>End frame</h2>
-          <div class="image-frame">
-            <img src="assets/end-frame.png" alt="End frame input" />
-          </div>
-          <p>The ending scene used as the second visual reference for the transition.</p>
-        </article>
-
-        <article class="card">
-          <h2>Generation prompt</h2>
           <p>
-            Use the start frame and end frame to animate. Make sure the developer types and
-            the terminal gets more text with colors. Servers are running, and the lights in
-            the servers change over time.
+            Original clip used as the creative reference, cued to the moment the prompt was
+            written against:
+            <a href="https://youtu.be/ddDJxFnv-qs?t=12" target="_blank" rel="noreferrer">youtu.be/ddDJxFnv-qs?t=12</a>.
           </p>
-          <ul>
-            <li>Interpolation mode: Veo 3.1 - Lite</li>
-            <li>Duration: 8 seconds</li>
-            <li>Output style: practical tech animation</li>
-          </ul>
         </article>
 
         <article class="card">
-          <h2>Output concept</h2>
-          <p>
-            The intended result is a short motion sequence that smoothly transitions between
-            the two provided frames while emphasizing terminal text growth, server activity,
-            and changing light states.
-          </p>
-          <div class="note">
-            Input and output are presented here as a lightweight webpage so the project can be
-            reviewed quickly in a browser.
+          <h2>Generated output</h2>
+          <div class="media-frame">
+            <video src="assets/output-animation.mp4" controls playsinline preload="metadata"></video>
           </div>
+          <p>8-second interpolation rendered with Veo 3.1 - Lite from the start and end frames.</p>
         </article>
       </section>
 
-      <section class="output">
-        <h2>Output animation</h2>
-        <div class="video-frame">
-          <video src="assets/output-animation.mp4" controls playsinline preload="metadata"></video>
+      <section class="card" style="margin-top: 20px;">
+        <h2>What to look for</h2>
+        <ul>
+          <li><strong>Typing motion</strong> — does the developer's typing cadence feel as continuous as the source?</li>
+          <li><strong>Terminal text growth</strong> — does text accumulate and color the same way over time?</li>
+          <li><strong>Server light states</strong> — do the indicator lights change in a comparable rhythm?</li>
+          <li><strong>Overall pacing</strong> — does the 8-second duration match the energy of the reference moment?</li>
+        </ul>
+        <div class="note">
+          This page embeds both clips for a manual, visual comparison rather than an automated
+          frame diff — play them side by side and judge fidelity to the source yourself.
         </div>
-        <p class="caption">8-second interpolation rendered with Veo 3.1 - Lite.</p>
       </section>
     </div>
   </body>

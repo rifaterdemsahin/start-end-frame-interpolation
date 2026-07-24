@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API — Start-End Frame Interpolation</title>
+    <style>
+      :root {
+        --bg: #07111f;
+        --panel: #0f1d35;
+        --panel-2: #122442;
+        --text: #eff5ff;
+        --muted: #9eb2d4;
+        --accent: #7dd3fc;
+        --accent-2: #8b5cf6;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background: radial-gradient(circle at top, #18325a, var(--bg) 56%);
+        color: var(--text);
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 48px 20px 72px;
+      }
+
+      .hero {
+        text-align: center;
+        margin-bottom: 36px;
+      }
+
+      .hero h1 {
+        margin: 0 0 10px;
+        font-size: clamp(2rem, 4vw, 3.5rem);
+      }
+
+      .hero p {
+        margin: 0 auto;
+        max-width: 760px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .badge {
+        display: inline-block;
+        margin-bottom: 16px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(125, 211, 252, 0.15);
+        border: 1px solid rgba(125, 211, 252, 0.4);
+        color: var(--accent);
+        font-size: 0.92rem;
+        font-weight: 700;
+      }
+
+      .grid {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      }
+
+      .card {
+        background: linear-gradient(180deg, rgba(18, 36, 66, 0.96), rgba(10, 22, 43, 0.96));
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 18px;
+        padding: 18px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.28);
+      }
+
+      .card h2 {
+        margin-top: 0;
+        margin-bottom: 12px;
+        font-size: 1.25rem;
+      }
+
+      .card p,
+      .card li {
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .card ul {
+        margin: 12px 0 0;
+        padding-left: 18px;
+      }
+
+      pre {
+        background: #081120;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        padding: 14px;
+        overflow-x: auto;
+        font-size: 0.85rem;
+        line-height: 1.5;
+        color: #d7e6ff;
+      }
+
+      code {
+        font-family: "SF Mono", Menlo, Consolas, monospace;
+      }
+
+      .note {
+        margin-top: 16px;
+        padding: 16px 18px;
+        border-left: 4px solid var(--accent-2);
+        background: rgba(139, 92, 246, 0.12);
+        border-radius: 10px;
+        color: #e5ddff;
+      }
+
+      a {
+        color: var(--accent);
+      }
+
+      .builder {
+        margin-top: 32px;
+      }
+
+      .builder h2 {
+        font-size: 1.5rem;
+        margin-bottom: 6px;
+      }
+
+      .builder > p {
+        color: var(--muted);
+        margin-top: 0;
+        margin-bottom: 20px;
+      }
+
+      .form-grid {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        margin-bottom: 18px;
+      }
+
+      .field label {
+        display: block;
+        font-weight: 700;
+        font-size: 0.9rem;
+        margin-bottom: 6px;
+        color: var(--text);
+      }
+
+      .field input[type="text"],
+      .field input[type="file"],
+      .field select,
+      .field textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: var(--panel-2);
+        color: var(--text);
+        font-family: inherit;
+        font-size: 0.92rem;
+      }
+
+      .field textarea {
+        min-height: 84px;
+        resize: vertical;
+      }
+
+      .thumb-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 8px;
+      }
+
+      .thumb {
+        width: 64px;
+        height: 64px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        object-fit: cover;
+        background: #081120;
+        display: none;
+      }
+
+      .generate-btn {
+        appearance: none;
+        border: 0;
+        border-radius: 10px;
+        padding: 12px 20px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #04121f;
+        background: linear-gradient(120deg, var(--accent), #a5b4fc);
+        cursor: pointer;
+      }
+
+      .generate-btn:hover {
+        filter: brightness(1.05);
+      }
+
+      .output-tabs {
+        margin-top: 20px;
+      }
+
+      .output-tabs h3 {
+        font-size: 1rem;
+        margin: 18px 0 8px;
+        color: var(--text);
+      }
+
+      .topnav {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        backdrop-filter: blur(10px);
+        background: rgba(7, 17, 31, 0.82);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .topnav-inner {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 14px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .brand {
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        color: var(--text);
+        text-decoration: none;
+      }
+
+      .topnav-links {
+        display: flex;
+        gap: 20px;
+      }
+
+      .topnav-links a {
+        color: var(--muted);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        padding: 6px 2px;
+        border-bottom: 2px solid transparent;
+        transition: color 0.15s, border-color 0.15s;
+      }
+
+      .topnav-links a:hover {
+        color: var(--text);
+      }
+
+      .topnav-links a.active {
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="topnav">
+      <div class="topnav-inner">
+        <a class="brand" href="index.html">Start-End Frame Interpolation</a>
+        <div class="topnav-links">
+          <a href="index.html">Home</a>
+          <a href="comparison.html">Comparison</a>
+          <a href="api.html" class="active">API</a>
+        </div>
+      </div>
+    </nav>
+    <div class="container">
+      <section class="hero">
+        <div class="badge">Do it programmatically</div>
+        <h1>Generate from start &amp; end frames via API</h1>
+        <p>
+          The same workflow used in Google Flow — a start frame, an end frame, and a
+          descriptive prompt — can be driven programmatically through hosted model APIs.
+          Pick a provider below, or use the snippet builder to draft a request for your own
+          frames and prompt.
+        </p>
+      </section>
+
+      <section class="grid">
+        <article class="card">
+          <h2>Option A — fal.ai</h2>
+          <p>
+            <a href="https://fal.ai/models" target="_blank" rel="noreferrer">fal.ai</a> hosts
+            several image-to-video models that accept a start frame and an end/tail frame for
+            interpolation (for example Kling's <code>tail_image_url</code> or Luma Ray2's
+            <code>end_image_url</code> parameters). Check the specific model's page for the
+            exact field names before you call it.
+          </p>
+          <pre><code>curl -X POST https://fal.run/&lt;model-id&gt; \
+  -H "Authorization: Key $FAL_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "image_url": "https://.../start-frame.png",
+    "end_image_url": "https://.../end-frame.png",
+    "prompt": "Developer typing in a terminal, text growing and colorizing, server lights changing",
+    "duration": "8"
+  }'</code></pre>
+          <ul>
+            <li>Upload local frames to any public URL first, or use fal's storage upload API.</li>
+            <li>Model IDs and parameter names vary per model — confirm on the model's fal.ai page.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h2>Option B — Gemini / Veo</h2>
+          <p>
+            Google Flow itself has no public API, but the underlying
+            <a href="https://ai.google.dev/gemini-api/docs/video" target="_blank" rel="noreferrer">Veo models are reachable through the Gemini API</a>,
+            which accepts a first frame image and, on newer Veo versions, a last frame for
+            interpolation.
+          </p>
+          <pre><code>curl -X POST \
+  "https://generativelanguage.googleapis.com/v1beta/models/veo-3.1:predictLongRunning?key=$GEMINI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "instances": [{
+      "prompt": "Developer typing in a terminal, text growing and colorizing, server lights changing",
+      "image": { "bytesBase64Encoded": "&lt;start-frame-base64&gt;" },
+      "lastFrame": { "bytesBase64Encoded": "&lt;end-frame-base64&gt;" }
+    }]
+  }'</code></pre>
+          <ul>
+            <li>Video generation is asynchronous — poll the returned operation until it completes.</li>
+            <li>Field names have changed across Veo releases — verify against current Gemini API docs.</li>
+          </ul>
+        </article>
+      </section>
+
+      <section class="builder">
+        <h2>Snippet builder</h2>
+        <p>Fill in your frames, prompt, and provider to draft a ready-to-edit request.</p>
+
+        <div class="card">
+          <div class="form-grid">
+            <div class="field">
+              <label for="startFrame">Start frame</label>
+              <input type="file" id="startFrame" accept="image/*" />
+              <div class="thumb-row"><img id="startThumb" class="thumb" alt="Start frame preview" /></div>
+            </div>
+            <div class="field">
+              <label for="endFrame">End frame</label>
+              <input type="file" id="endFrame" accept="image/*" />
+              <div class="thumb-row"><img id="endThumb" class="thumb" alt="End frame preview" /></div>
+            </div>
+            <div class="field">
+              <label for="provider">Model provider</label>
+              <select id="provider">
+                <option value="fal">fal.ai (Kling / Luma Ray2 style)</option>
+                <option value="gemini">Gemini API (Veo)</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="duration">Duration (seconds)</label>
+              <input type="text" id="duration" value="8" />
+            </div>
+          </div>
+          <div class="field" style="margin-bottom: 16px;">
+            <label for="prompt">Descriptive prompt</label>
+            <textarea id="prompt">Use the start frame and end frame to animate. Make sure the developer types and the terminal gets more text with colors, and the servers running have lights that change.</textarea>
+          </div>
+          <button class="generate-btn" id="generateBtn" type="button">Generate snippet</button>
+
+          <div class="output-tabs">
+            <h3>curl</h3>
+            <pre><code id="curlOut">// fill in the fields above and click "Generate snippet"</code></pre>
+            <h3>JavaScript (fetch)</h3>
+            <pre><code id="jsOut">// fill in the fields above and click "Generate snippet"</code></pre>
+          </div>
+          <div class="note">
+            This builder only formats a request template in your browser — it never sends your
+            frames anywhere or stores an API key. Replace the placeholder key and frame URLs
+            with real values before running the snippet yourself.
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      function wireThumb(inputId, thumbId) {
+        var input = document.getElementById(inputId);
+        var thumb = document.getElementById(thumbId);
+        input.addEventListener("change", function () {
+          var file = input.files && input.files[0];
+          if (!file) {
+            thumb.style.display = "none";
+            return;
+          }
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            thumb.src = e.target.result;
+            thumb.style.display = "block";
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      wireThumb("startFrame", "startThumb");
+      wireThumb("endFrame", "endThumb");
+
+      document.getElementById("generateBtn").addEventListener("click", function () {
+        var startFile = document.getElementById("startFrame").files[0];
+        var endFile = document.getElementById("endFrame").files[0];
+        var provider = document.getElementById("provider").value;
+        var duration = document.getElementById("duration").value || "8";
+        var prompt = document.getElementById("prompt").value.trim();
+        var startName = startFile ? startFile.name : "start-frame.png";
+        var endName = endFile ? endFile.name : "end-frame.png";
+
+        var curlOut, jsOut;
+
+        if (provider === "fal") {
+          curlOut =
+            "curl -X POST https://fal.run/<model-id> \\\n" +
+            '  -H "Authorization: Key $FAL_KEY" \\\n' +
+            '  -H "Content-Type: application/json" \\\n' +
+            "  -d '{\n" +
+            '    "image_url": "https://your-storage/' + startName + '",\n' +
+            '    "end_image_url": "https://your-storage/' + endName + '",\n' +
+            '    "prompt": "' + prompt.replace(/"/g, '\\"') + '",\n' +
+            '    "duration": "' + duration + '"\n' +
+            "  }'";
+
+          jsOut =
+            'const response = await fetch("https://fal.run/<model-id>", {\n' +
+            '  method: "POST",\n' +
+            "  headers: {\n" +
+            '    Authorization: `Key ${process.env.FAL_KEY}`,\n' +
+            '    "Content-Type": "application/json",\n' +
+            "  },\n" +
+            "  body: JSON.stringify({\n" +
+            '    image_url: "https://your-storage/' + startName + '",\n' +
+            '    end_image_url: "https://your-storage/' + endName + '",\n' +
+            '    prompt: "' + prompt.replace(/"/g, '\\"') + '",\n' +
+            '    duration: "' + duration + '",\n' +
+            "  }),\n" +
+            "});\n" +
+            "const result = await response.json();";
+        } else {
+          curlOut =
+            "curl -X POST \\\n" +
+            '  "https://generativelanguage.googleapis.com/v1beta/models/veo-3.1:predictLongRunning?key=$GEMINI_API_KEY" \\\n' +
+            '  -H "Content-Type: application/json" \\\n' +
+            "  -d '{\n" +
+            '    "instances": [{\n' +
+            '      "prompt": "' + prompt.replace(/"/g, '\\"') + '",\n' +
+            '      "image": { "bytesBase64Encoded": "<base64 of ' + startName + '>" },\n' +
+            '      "lastFrame": { "bytesBase64Encoded": "<base64 of ' + endName + '>" }\n' +
+            "    }]\n" +
+            "  }'";
+
+          jsOut =
+            "const response = await fetch(\n" +
+            '  `https://generativelanguage.googleapis.com/v1beta/models/veo-3.1:predictLongRunning?key=${process.env.GEMINI_API_KEY}`,\n' +
+            "  {\n" +
+            '    method: "POST",\n' +
+            '    headers: { "Content-Type": "application/json" },\n' +
+            "    body: JSON.stringify({\n" +
+            "      instances: [{\n" +
+            '        prompt: "' + prompt.replace(/"/g, '\\"') + '",\n' +
+            "        image: { bytesBase64Encoded: startFrameBase64 },\n" +
+            "        lastFrame: { bytesBase64Encoded: endFrameBase64 },\n" +
+            "      }],\n" +
+            "    }),\n" +
+            "  }\n" +
+            ");\n" +
+            "const operation = await response.json();\n" +
+            "// poll the operation until done, then download the resulting video";
+        }
+
+        document.getElementById("curlOut").textContent = curlOut;
+        document.getElementById("jsOut").textContent = jsOut;
+      });
+    </script>
+  </body>
+</html>

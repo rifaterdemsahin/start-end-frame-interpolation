@@ -1,14 +1,20 @@
 # start-end-frame-interpolation
 
-A single-page static site showcasing a start/end frame video interpolation
+A multi-page static site showcasing a start/end frame video interpolation
 experiment made with Google Flow (Veo 3.1 - Lite). There is no build step —
-`index.html` is served as-is.
+each `.html` page is served as-is.
 
 ## Structure
 
 - `index.html` — the showcase page (dark theme, card grid layout, inline CSS).
+- `comparison.html` — side-by-side of the generated output vs. the YouTube
+  source reference clip (embedded, not downloaded).
+- `api.html` — docs + in-browser snippet builder for driving the same
+  start/end frame + prompt workflow programmatically via fal.ai or the
+  Gemini API (Veo). The builder only formats text client-side; it never
+  makes network calls or handles real API keys.
 - `README.md` — project write-up: prompt used, generation choices, output.
-- `assets/` — media referenced by both `index.html` and `README.md`:
+- `assets/` — media referenced by the HTML pages and `README.md`:
   - `start-frame.png` — first input frame
   - `end-frame.png` — last input frame
   - `output-animation.mp4` — generated interpolation video
@@ -17,8 +23,11 @@ experiment made with Google Flow (Veo 3.1 - Lite). There is no build step —
 
 ## Working on this repo
 
-- Keep `index.html` dependency-free (no external CDN scripts/fonts) since it
-  is deployed as raw static content.
-- If you add or rename files under `assets/`, update both `README.md` and
-  `index.html` references together — nothing else builds or checks links.
+- Keep the HTML pages dependency-free (no external CDN scripts/fonts) since
+  they're deployed as raw static content.
+- The three pages share a `.topnav` nav bar and CSS variables — duplicated
+  per file rather than templated, since there's no build step. Keep them in
+  sync when styling changes.
+- If you add or rename files under `assets/`, update `README.md` and every
+  HTML page that references them — nothing else builds or checks links.
 - Live site: https://rifaterdemsahin.github.io/start-end-frame-interpolation/
